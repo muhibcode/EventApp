@@ -1,0 +1,143 @@
+<template>
+    <div class="flex mt-5 mr-20 justify-end">
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="-mr-2 mt-3.5">
+                <!-- <span :class="`material-symbols-outlined ${notcolor}`">
+                    notifications
+                </span> -->
+                <i
+                    :class="`fa-solid fa-bell fa-xl ${notcolor}`"
+                    @click.prevent="notclick"
+                ></i>
+            </div>
+
+            <ul
+                tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box z-[1] w-96 p-2 shadow"
+            >
+                <li v-for="(item, index) in notifications" :key="index">
+                    <a>{{ item.content }}</a>
+                </li>
+                <!-- <li><a>Item 2</a></li> -->
+            </ul>
+        </div>
+
+        <h1 :class="`${notcolor}`">{{ unread }}</h1>
+    </div>
+</template>
+<script setup>
+import { usePage, Link, useForm } from "@inertiajs/vue3";
+import { onMounted, ref } from "vue";
+import axios from "axios";
+
+const page = usePage();
+const unread = ref(0);
+const notcolor = ref("text-gray-500");
+const form = useForm({});
+const follower = ref(false);
+const reqsend = ref(false);
+const notifications = ref([]);
+const notclick = () => {
+    unread.value = 0;
+    notcolor.value = "text-gray-500";
+    localStorage.removeItem("unread");
+    // form.get(route("notification.index"));
+};
+
+// const props = defineProps({
+//     notification: Array,
+// });
+// console.log(props.notification);
+
+onMounted(async () => {
+    const res = await axios.get(route("notification.index"));
+    console.log(res.data.notification);
+    notifications.value = res.data.notification;
+    let unreadlocal = localStorage.getItem("unread");
+
+    // console.log(unread.value);
+
+    if (unreadlocal == null) {
+        localStorage.setItem("unread", unread.value);
+    } else {
+        unread.value = Number(unreadlocal);
+
+        if (unread.value > 0) {
+            notcolor.value = "text-red-500";
+        }
+    }
+
+    window.Echo.private(
+        `App.Models.User.${page.props.auth.user.id}`
+    ).stopListening(".notify");
+
+    window.Echo.private(`App.Models.User.${page.props.auth.user.id}`).listen(
+        ".notify",
+        (e) => {
+            // notifications.push(e.message);
+            // console.log(e);
+            // unreadlocal = localStorage.getItem("unread");
+            unread.value += 1;
+            unreadlocal = unread.value;
+            notcolor.value = "text-red-500";
+            notifications.value.push({ content: e.message });
+            localStorage.setItem("unread", unreadlocal);
+            // page.props.flash.message = e.message;
+            // alert(e.message);
+            // msg.value = e.mess;
+            // console.log(e);
+        }
+    );
+
+    // window.Echo.private(`user-follow.${page.props.auth.user.id}`).stopListening(
+    //     ".follow"
+    // );
+    // window.Echo.private(`user-follow.${page.props.auth.user.id}`).listen(
+    //     ".follow",
+    //     (e) => {
+    //         // unread.value += 1;
+    //         // unreadlocal = unread.value;
+    //         // notcolor.value = "text-red-500";
+    //         // notifications.value.push({ content: e.data.message });
+    //         // localStorage.setItem("unread", unreadlocal);
+    //         // if current user is visiting is own page
+    //         // if (page.props.auth.user.id == props.userinfo.user.id) {
+    //         //     //this first scenerio will never happen but we code it here
+    //         //     if (e.data.target_user == page.props.auth.user.id) {
+    //         //         followerCount.value = e.data.target_user_follower;
+    //         //     }
+    //         //     //this will happen when a current auth user is follower
+    //         //     if (e.data.user_id == page.props.auth.user.id) {
+    //         //         followingCount.value = e.data.user_following;
+    //         //     }
+    //         // } else {
+    //         //     // console.log(props.userinfo.user.id);
+    //         //     // console.log(e.target_user);
+    //
+    //         //     //here we check if user is not visiting his own page but visiting another page
+    //         //     if (props.userinfo.user.id == e.data.target_user) {
+    //         //         //this will happen when a current user is visiting some target user page
+    //         //         follower.value = true;
+    //         //         followerCount.value = e.data.target_user_follower;
+    //         //     }
+    //         //     //this will happen when a current user is visiting some follower user page
+    //
+    //         //     if (props.userinfo.user.id == e.data.user_id) {
+    //         //         followingCount.value = e.data.user_following;
+    //         //     }
+    //         // }
+    //
+    //         // if (page.props.auth.user.id) {
+    //         // }
+    //         // page.props.flash.message = e.message;
+    //
+    //         // props.userinfo.following = e.data.following;
+    //         // props.userinfo.following.push(e.data.following.following);
+    //
+    //         // alert(e.data.message);
+    //         // msg.value = e.mess;
+    //         // console.log(e);
+    //     }
+    // );
+});
+</script>
