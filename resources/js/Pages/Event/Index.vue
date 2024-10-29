@@ -22,8 +22,17 @@ props.events.sort((a, b) => {
     return new Date(a.date) - new Date(b.date);
 });
 
+let rEvent = props.events.reduce((accumulator, item) => {
+    const date = item.date;
+    if (!accumulator[date]) {
+        accumulator[date] = [];
+    }
+    accumulator[date].push(item);
+    return accumulator;
+}, {});
+
 // notifications.value = props.notifications;
-console.log(props.events);
+console.log(rEvent);
 window.Echo.channel(`create-activity`).listen(".activity", (e) => {
     props.events.push(e.data);
     // page.props.flash.message = e.message;
@@ -93,13 +102,13 @@ const postcom = (id) => {
     <!-- <h2>{{ newNames.name }}</h2> -->
 
     <div v-for="(item, index) in events" :key="index" class="ml-5">
-        <div v-if="item">
+        <div v-if="item" class="border-blue-600 border rounded-md w-40">
             <Link :href="route('event.show', item.id)">
-                <h1>
+                <div>
                     {{ item.title }}
                     {{ item.venue }}
                     {{ item.date }}
-                </h1>
+                </div>
                 <span
                     v-if="
                         item.hosted_by?.userinfo.user?.id ===
@@ -126,10 +135,10 @@ const postcom = (id) => {
         </div>
 
         <br />
-        <h1>Add Comment</h1>
+        <!-- <h1>Add Comment</h1>
         <form @submit.prevent="postcom(item.id)">
             <input type="text" v-model="form.body" />
             <button>Post</button>
-        </form>
+        </form> -->
     </div>
 </template>
