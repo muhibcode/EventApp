@@ -102,36 +102,81 @@ const postcom = (id) => {
     <!-- <h2>{{ newNames.name }}</h2> -->
 
     <div v-for="(item, index) in events" :key="index" class="ml-5">
-        <div v-if="item" class="border-blue-600 border rounded-md w-40">
-            <Link :href="route('event.show', item.id)">
+        <div
+            v-if="item"
+            class="border-blue-600 border rounded-md w-96 h-56 pt-5"
+        >
+            <div class="flex">
+                <div class="flex avatar mr-10 items-center">
+                    <div class="w-14 rounded-full">
+                        <img
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        />
+                    </div>
+                </div>
                 <div>
                     {{ item.title }}
-                    {{ item.venue }}
-                    {{ item.date }}
+                    <span
+                        v-if="
+                            item.hosted_by?.userinfo.user?.id ===
+                            $page.props.auth.user?.id
+                        "
+                    >
+                        <h1>Hosted by {{ page.props.auth.user.name }}</h1>
+                        <div class="border border-rose-400 rounded-sm">
+                            <h1 class="text-rose-400 px-2 font-semibold">
+                                you are hosting this event..!!
+                            </h1>
+                        </div>
+                    </span>
+
+                    <h5 v-else>
+                        Hosted by {{ item.hosted_by.userinfo?.user.name }}
+
+                        <div v-for="(i, index) in item.attendees" :key="index">
+                            <h3
+                                v-if="
+                                    i.userinfo.user.id ===
+                                    $page.props.auth.user?.id
+                                "
+                            >
+                                you are going to this event..!!
+                            </h3>
+                        </div>
+                    </h5>
                 </div>
-                <span
-                    v-if="
-                        item.hosted_by?.userinfo.user?.id ===
-                        $page.props.auth.user?.id
-                    "
-                >
-                    you are hosting this event..!!
-                </span>
+            </div>
 
-                <h5 v-else>
-                    Hosted by {{ item.hosted_by.userinfo?.user.name }}
-
-                    <div v-for="(i, index) in item.attendees" :key="index">
-                        <h3
-                            v-if="
-                                i.userinfo.user.id === $page.props.auth.user?.id
-                            "
-                        >
-                            you are going to this event..!!
-                        </h3>
+            <div class="flex items-center">
+                <i class="fa-solid fa-location-dot ml-2 mr-1"></i>
+                {{ item.venue }}
+                <i class="fa-solid fa-location-dot ml-2 mr-1"></i>
+                {{ new Date(item.date).toDateString() }}
+            </div>
+            <div class="flex">
+                <div class="flex avatar mr-2 items-center">
+                    <div class="w-10 rounded-full">
+                        <img
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        />
                     </div>
-                </h5>
-            </Link>
+                </div>
+                <div class="flex avatar mr-2 items-center">
+                    <div class="w-10 rounded-full">
+                        <img
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end mr-4">
+                <Link
+                    :href="route('event.show', item.id)"
+                    class="btn btn-primary btn-outline btn-sm"
+                    >View</Link
+                >
+            </div>
         </div>
 
         <br />

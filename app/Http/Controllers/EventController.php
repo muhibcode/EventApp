@@ -24,6 +24,7 @@ class EventController extends Controller
         // $notifications = Notiifcations::where('user_id', '=', auth()->id())->get();
         // $attendee = Attendee::with(['activities.city', 'user', 'city'])->get();
         // Activity::orderByDesc('created_at')->paginate(10)
+
         return inertia('Event/Index', ['events' => $events]);
     }
 
