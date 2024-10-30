@@ -100,82 +100,117 @@ const postcom = (id) => {
     </h2> -->
 
     <!-- <h2>{{ newNames.name }}</h2> -->
-
-    <div v-for="(item, index) in events" :key="index" class="ml-5">
+    <div>
         <div
-            v-if="item"
-            class="border-blue-600 border rounded-md w-96 h-56 pt-5"
+            v-for="(item, index) in events"
+            :key="index"
+            class="grid grid-cols-2 ml-40 mt-5"
         >
-            <div class="flex">
-                <div class="flex avatar mr-10 items-center">
-                    <div class="w-14 rounded-full">
-                        <img
-                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                        />
+            <div
+                v-if="item"
+                class="border-blue-600 border rounded-md w-full h-60 pt-5 px-3"
+            >
+                <div class="flex">
+                    <div class="flex avatar mr-10 items-center">
+                        <div class="w-14 rounded-full">
+                            <img
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div>
-                    {{ item.title }}
-                    <span
-                        v-if="
-                            item.hosted_by?.userinfo.user?.id ===
-                            $page.props.auth.user?.id
-                        "
-                    >
-                        <h1>Hosted by {{ page.props.auth.user.name }}</h1>
-                        <div class="border border-rose-400 rounded-sm">
-                            <h1 class="text-rose-400 px-2 font-semibold">
-                                you are hosting this event..!!
+                    <div>
+                        <span class="font-bold text-lg">
+                            {{ item.title }}
+                        </span>
+                        <span
+                            v-if="
+                                item.hosted_by?.userinfo.user?.id ===
+                                $page.props.auth.user?.id
+                            "
+                        >
+                            <h1>
+                                Hosted by
+                                <span class="font-black text-blue-500">
+                                    {{ page.props.auth.user.name }}
+                                </span>
                             </h1>
-                        </div>
-                    </span>
+                            <div class="border border-rose-500 rounded-sm">
+                                <h1 class="text-rose-500 px-2 font-semibold">
+                                    you are hosting this event..!!
+                                </h1>
+                            </div>
+                        </span>
 
-                    <h5 v-else>
-                        Hosted by {{ item.hosted_by.userinfo?.user.name }}
-
-                        <div v-for="(i, index) in item.attendees" :key="index">
-                            <h3
-                                v-if="
-                                    i.userinfo.user.id ===
-                                    $page.props.auth.user?.id
+                        <h1 v-else>
+                            Hosted by
+                            <Link
+                                :href="
+                                    route(
+                                        'userinfo.show',
+                                        item?.hosted_by.userinfo?.user.id
+                                    )
                                 "
+                                class="text-blue-500 font-black"
                             >
-                                you are going to this event..!!
-                            </h3>
+                                {{ item.hosted_by.userinfo?.user.name }}
+                            </Link>
+
+                            <div
+                                v-for="(i, index) in item.attendees"
+                                :key="index"
+                            >
+                                <h1
+                                    class="border border-green-600 rounded-sm text-green-600 px-2 font-semibold"
+                                    v-if="
+                                        i.userinfo.user.id ===
+                                        $page.props.auth.user?.id
+                                    "
+                                >
+                                    you are going to this event..!!
+                                </h1>
+                            </div>
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-around mt-2">
+                    <div class="mr-1">
+                        <i class="fa-solid fa-location-dot"></i>
+                        {{ item.venue }}
+                    </div>
+                    <div class="mr-1">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        {{ new Date(item.date).toDateString() }}
+                    </div>
+                    <div class="mr-1">
+                        <i class="fa-solid fa-clock ml-2"></i>
+                        5:00 PM
+                    </div>
+                </div>
+                <div class="flex">
+                    <div class="flex avatar mr-2 items-center">
+                        <div class="w-10 rounded-full">
+                            <img
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                            />
                         </div>
-                    </h5>
-                </div>
-            </div>
-
-            <div class="flex items-center">
-                <i class="fa-solid fa-location-dot ml-2 mr-1"></i>
-                {{ item.venue }}
-                <i class="fa-solid fa-location-dot ml-2 mr-1"></i>
-                {{ new Date(item.date).toDateString() }}
-            </div>
-            <div class="flex">
-                <div class="flex avatar mr-2 items-center">
-                    <div class="w-10 rounded-full">
-                        <img
-                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                        />
+                    </div>
+                    <div class="flex avatar mr-2 items-center">
+                        <div class="w-10 rounded-full">
+                            <img
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                            />
+                        </div>
                     </div>
                 </div>
-                <div class="flex avatar mr-2 items-center">
-                    <div class="w-10 rounded-full">
-                        <img
-                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                        />
-                    </div>
-                </div>
-            </div>
 
-            <div class="flex justify-end mr-4">
-                <Link
-                    :href="route('event.show', item.id)"
-                    class="btn btn-primary btn-outline btn-sm"
-                    >View</Link
-                >
+                <div class="flex justify-end mr-4">
+                    <Link
+                        :href="route('event.show', item.id)"
+                        class="btn shadow-lg btn-outline text-orange-700 btn-sm hover:border-orange-700 hover:bg-orange-700 hover:text-white"
+                        >View</Link
+                    >
+                </div>
             </div>
         </div>
 

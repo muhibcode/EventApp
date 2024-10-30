@@ -1,6 +1,12 @@
 <template>
-    <div class="flex bg-orange-400 py-2 shadow-lg justify-end">
-        <div class="flex mt-4 items-center">
+    <div class="flex bg-orange-600 py-2 shadow-lg justify-end items-center">
+        <Link
+            :href="route('event.create')"
+            class="btn btn-warning mr-20 shadow-md"
+        >
+            Creat Activity
+        </Link>
+        <div class="flex">
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button">
                     <i
@@ -11,10 +17,13 @@
 
                 <ul
                     tabindex="0"
-                    class="dropdown-content menu bg-base-100 rounded-md z-[1] w-96 p-2 shadow"
+                    class="dropdown-content menu bg-base-100 rounded-md z-[1] w-80 p-2 shadow mt-4"
                 >
                     <li v-for="(item, index) in notifications" :key="index">
-                        <a>{{ item.content }}</a>
+                        <div class="flex">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                            <a>{{ item.content }}</a>
+                        </div>
                     </li>
                     <!-- <li><a>Item 2</a></li> -->
                 </ul>
@@ -27,15 +36,20 @@
                 />
             </div>
         </div> -->
-        <h1 :class="`${notcolor} flex items-center mr-10`">{{ unread }}</h1>
+        <h1 :class="`${notcolor} flex items-center mr-10 mb-5`">
+            {{ unread }}
+        </h1>
 
-        <div class="flex avatar mr-10 items-center">
+        <Link
+            :href="route('userinfo.show', page.props.auth.user.id)"
+            class="flex avatar mr-10 items-center"
+        >
             <div class="w-14 rounded-full">
                 <img
                     src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                 />
             </div>
-        </div>
+        </Link>
     </div>
 </template>
 <script setup>
@@ -45,7 +59,7 @@ import axios from "axios";
 
 const page = usePage();
 const unread = ref(0);
-const notcolor = ref("text-gray-500");
+const notcolor = ref("text-gray-600");
 const form = useForm({});
 const follower = ref(false);
 const reqsend = ref(false);
@@ -53,7 +67,7 @@ const notifications = ref([]);
 
 const notclick = () => {
     unread.value = 0;
-    notcolor.value = "text-gray-500";
+    notcolor.value = "text-gray-600";
     localStorage.removeItem("unread");
 };
 
@@ -76,7 +90,7 @@ onMounted(async () => {
         unread.value = Number(unreadlocal);
 
         if (unread.value > 0) {
-            notcolor.value = "text-red-900";
+            notcolor.value = "text-white";
         }
     }
 
@@ -92,7 +106,7 @@ onMounted(async () => {
             // unreadlocal = localStorage.getItem("unread");
             unread.value += 1;
             unreadlocal = unread.value;
-            notcolor.value = "text-red-900";
+            notcolor.value = "text-white";
             notifications.value.push({ content: e.message });
             localStorage.setItem("unread", unreadlocal);
             // page.props.flash.message = e.message;
