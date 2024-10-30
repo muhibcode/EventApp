@@ -67,59 +67,64 @@ const postcom = (id) => {
 
 <template>
     <NavBar />
-    <div class="mt-10 pl-5">
-        <Link
-            :href="route('event.create')"
-            class="font-semibold text-xl text-gray-800"
-            >Add Activity
-        </Link>
-    </div>
-    <div class="mt-10 pl-5 group">
-        <Link
-            :href="route('userinfo.create')"
-            class="font-semibold text-xl text-gray-800"
-            >Add Profile
-        </Link>
-    </div>
-    <div class="mt-10 pl-5">
-        <Link
-            :href="route('city.create')"
-            class="font-semibold text-xl text-gray-800"
-            >Add City
-        </Link>
-    </div>
-    <div class="mt-10 pl-5">
-        <Link
-            :href="route('userinfo.show', page.props.auth.user)"
-            class="font-semibold text-xl text-gray-800"
-            >Profile
-        </Link>
-    </div>
-    <!-- <h2 v-for="(item, index) in act" :key="index">
+    <div class="bg-gray-200 pt-10">
+        <!-- <div class="mt-10 pl-5">
+            <Link
+                :href="route('event.create')"
+                class="font-semibold text-xl text-gray-800"
+                >Add Activity
+            </Link>
+        </div> -->
+        <!-- <div class="mt-10 pl-5 group">
+            <Link
+                :href="route('userinfo.create')"
+                class="font-semibold text-xl text-gray-800"
+                >Add Profile
+            </Link>
+        </div> -->
+        <!-- <div class="mt-10 pl-5">
+            <Link
+                :href="route('city.create')"
+                class="font-semibold text-xl text-gray-800"
+                >Add City
+            </Link>
+        </div> -->
+        <!-- <div class="mt-10 pl-5">
+            <Link
+                :href="route('userinfo.show', page.props.auth.user)"
+                class="font-semibold text-xl text-gray-800"
+                >Profile
+            </Link>
+        </div> -->
+        <!-- <h2 v-for="(item, index) in act" :key="index">
         {{ item }}
     </h2> -->
 
-    <!-- <h2>{{ newNames.name }}</h2> -->
-    <div>
+        <!-- <h2>{{ newNames.name }}</h2> -->
         <div
             v-for="(item, index) in events"
             :key="index"
             class="grid grid-cols-2 ml-40 mt-5"
         >
-            <div
-                v-if="item"
-                class="border-blue-600 border rounded-md w-full h-60 pt-5 px-3"
-            >
+            <div v-if="item" class="rounded-md h-72 pt-5 px-10 bg-white">
                 <div class="flex">
-                    <div class="flex avatar mr-10 items-center">
+                    <Link
+                        :href="
+                            route(
+                                'userinfo.show',
+                                item?.hosted_by.userinfo?.user.id
+                            )
+                        "
+                        class="flex avatar mr-10 items-center"
+                    >
                         <div class="w-14 rounded-full">
                             <img
                                 src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                             />
                         </div>
-                    </div>
+                    </Link>
                     <div>
-                        <span class="font-bold text-lg">
+                        <span class="font-black text-lg">
                             {{ item.title }}
                         </span>
                         <span
@@ -128,13 +133,13 @@ const postcom = (id) => {
                                 $page.props.auth.user?.id
                             "
                         >
-                            <h1>
+                            <h1 class="mb-1">
                                 Hosted by
                                 <span class="font-black text-blue-500">
                                     {{ page.props.auth.user.name }}
                                 </span>
                             </h1>
-                            <div class="border border-rose-500 rounded-sm">
+                            <div class="border border-rose-500 rounded-sm mb-1">
                                 <h1 class="text-rose-500 px-2 font-semibold">
                                     you are hosting this event..!!
                                 </h1>
@@ -160,7 +165,7 @@ const postcom = (id) => {
                                 :key="index"
                             >
                                 <h1
-                                    class="border border-green-600 rounded-sm text-green-600 px-2 font-semibold"
+                                    class="mt-1 mb-1 border border-green-600 rounded-sm text-green-600 px-2 font-semibold"
                                     v-if="
                                         i.userinfo.user.id ===
                                         $page.props.auth.user?.id
@@ -172,8 +177,8 @@ const postcom = (id) => {
                         </h1>
                     </div>
                 </div>
-
-                <div class="flex items-center justify-around mt-2">
+                <div class="divider divider-default mt-1 mb-1"></div>
+                <div class="flex items-center justify-around">
                     <div class="mr-1">
                         <i class="fa-solid fa-location-dot"></i>
                         {{ item.venue }}
@@ -187,6 +192,7 @@ const postcom = (id) => {
                         5:00 PM
                     </div>
                 </div>
+                <div class="divider divider-default mt-1 mb-3"></div>
                 <div class="flex">
                     <div class="flex avatar mr-2 items-center">
                         <div class="w-10 rounded-full">
@@ -204,7 +210,7 @@ const postcom = (id) => {
                     </div>
                 </div>
 
-                <div class="flex justify-end mr-4">
+                <div class="flex justify-end">
                     <Link
                         :href="route('event.show', item.id)"
                         class="btn shadow-lg btn-outline text-orange-700 btn-sm hover:border-orange-700 hover:bg-orange-700 hover:text-white"
