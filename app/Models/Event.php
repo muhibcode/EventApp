@@ -30,4 +30,9 @@ class Event extends Model
     {
         return $this->morphMany(Comment::class, 'comment_table');
     }
+
+    public function images()
+    {
+        return $this->hasMany(EventImage::class, 'event_id');
+    }
 }

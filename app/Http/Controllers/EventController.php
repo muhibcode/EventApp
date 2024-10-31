@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\CreateActivity;
 use App\Events\UserFollow;
 use App\Models\Event;
+use App\Models\EventImage;
 use App\Models\Host;
 use App\Models\Notiifcations;
 use App\Models\UserInfo;
@@ -20,7 +21,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with(['attendees.userinfo.user', 'hostedBy.userinfo.user', 'comments'])->get();
+        $events = Event::with(['attendees.userinfo.user', 'hostedBy.userinfo.user', 'comments', 'images'])->get();
         // $notifications = Notiifcations::where('user_id', '=', auth()->id())->get();
         // $attendee = Attendee::with(['activities.city', 'user', 'city'])->get();
         // Activity::orderByDesc('created_at')->paginate(10)
@@ -67,11 +68,25 @@ class EventController extends Controller
             'userinfo' => $user->id
         ]);
 
+        if ($request->hasFile('images')) {
+
+            $images = $request->file('images');
+
+            foreach ($images as $image) {
+                $name = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('images', $name, 'public');
+                EventImage::create([
+                    'filename' => $path,
+                    'event_id' => $activity->id
+                ]);
+            }
+
+        }
         $act = Event::where('id', '=', $activity->id)
             ->with(['hostedBy.userinfo.user'])->first();
 
         broadcast(new CreateActivity($act))->toOthers();
-        // CreateActivity::dispatch($activity);
+        // CreateActivity::dispatch($act);
         // return response()->json($activity);
 
         return to_route('userinfo.show', $user->id)
@@ -85,9 +100,8 @@ class EventController extends Controller
     {
         // $act = Activity::where('id', $activity)
         $act = Event::where('id', '=', $event)
-            ->with('attendees.userinfo.user')
-            ->with('hostedBy.userinfo.user')
-            ->with('comments.userinfo.user')->first();
+            ->with(['attendees.userinfo.user', 'hostedBy.userinfo.user', 'comments.userinfo.user', 'images'])
+            ->first();
         // $act = $activity->with('attendees.user')->with('hostedBy.user')->first();
         // $act = Activity::firstWhere('id', '=', $id);
         // dd($act);

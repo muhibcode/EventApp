@@ -46,52 +46,83 @@ const sendComment = () => {
 
 <template>
     <NavBar />
-    <div class="mt-10 pl-5"></div>
-    <h1>{{ event?.title }}</h1>
-    <h1>{{ event?.city }}</h1>
-    <h1>{{ event?.venue }}</h1>
-    <h3>{{ event?.attendees.length }} is attending</h3>
-
-    <div v-if="!host && !res">
-        Hosted by
-        <Link
-            :href="route('userinfo.show', event?.hosted_by.userinfo?.user.id)"
-            class="font-semibold text-xl text-gray-800 underline"
-            >{{ event?.hosted_by.userinfo?.user.name }}
-        </Link>
-        ..!!
-        <!-- <h1>Hosted By {{ event?.hosted_by.userinfo?.user.name }}</h1> -->
-        <button @click.prevent="attend" class="flex">Attend</button>
-    </div>
-    <h3 v-else-if="host">
-        you are hosting this event..!!
-        <button :onclick="cancelEvent">Cancel Event</button>
-    </h3>
-
-    <h3 v-else-if="res">
-        Hosted by
-        <Link
-            :href="route('userinfo.show', event?.hosted_by.userinfo?.user.id)"
-            class="font-semibold text-xl text-gray-800 underline"
-            >{{ event?.hosted_by.userinfo?.user.name }}
-        </Link>
-        ..!!
-        <h1>you are going to this event..!!</h1>
-        <button :onclick="cancelAttend">Cancel Attendance</button>
-    </h3>
-    <br />
-    <h2>Comments</h2>
-
-    <h5 v-for="(item, index) in props.event.comments" :key="index">
-        {{ item.userinfo.user.name }}:
-        {{ item.body }}
-    </h5>
-    <div v-if="$page.props.auth.user?.id">
-        <form @submit.prevent="sendComment">
-            <div>
-                <input name="comment" type="text" v-model="form.body" />
+    <div class="grid grid-cols-2 p-20 pl-40 bg-slate-50">
+        <div>
+            <div class="flex">
+                <div
+                    class="border border-black rounded-l-md w-full h-120 mx-0.5"
+                >
+                    <img :src="props.event.images[0]?.src" alt="" />
+                </div>
+                <div>
+                    <div class="border border-black w-56 h-60 rounded-tr-md">
+                        <img :src="props.event.images[1]?.src" alt="" />
+                    </div>
+                    <div
+                        class="border border-black rounded-br-md w-56 h-60 mt-0.5"
+                    >
+                        <img :src="props.event.images[2]?.src" alt="" />
+                    </div>
+                </div>
             </div>
-            <button>send</button>
-        </form>
+
+            <div v-if="!host && !res">
+                Hosted by
+                <Link
+                    :href="
+                        route(
+                            'userinfo.show',
+                            event?.hosted_by.userinfo?.user.id
+                        )
+                    "
+                    class="font-semibold text-xl text-gray-800 underline"
+                    >{{ event?.hosted_by.userinfo?.user.name }}
+                </Link>
+                ..!!
+                <!-- <h1>Hosted By {{ event?.hosted_by.userinfo?.user.name }}</h1> -->
+                <button @click.prevent="attend" class="flex">Attend</button>
+            </div>
+            <h3 v-else-if="host">
+                you are hosting this event..!!
+                <button :onclick="cancelEvent">Cancel Event</button>
+            </h3>
+
+            <h3 v-else-if="res">
+                Hosted by
+                <Link
+                    :href="
+                        route(
+                            'userinfo.show',
+                            event?.hosted_by.userinfo?.user.id
+                        )
+                    "
+                    class="font-semibold text-xl text-gray-800 underline"
+                    >{{ event?.hosted_by.userinfo?.user.name }}
+                </Link>
+                ..!!
+                <h1>you are going to this event..!!</h1>
+                <button :onclick="cancelAttend">Cancel Attendance</button>
+            </h3>
+            <div class="mt-10">
+                <h1>{{ event?.title }}</h1>
+                <h1>{{ event?.city }}</h1>
+                <h1>{{ event?.venue }}</h1>
+                <h3>{{ event?.attendees.length }} is attending</h3>
+            </div>
+            <h2>comments</h2>
+
+            <h5 v-for="(item, index) in props.event.comments" :key="index">
+                {{ item.userinfo.user.name }}:
+                {{ item.body }}
+            </h5>
+            <div v-if="$page.props.auth.user?.id">
+                <form @submit.prevent="sendComment">
+                    <div>
+                        <input name="comment" type="text" v-model="form.body" />
+                    </div>
+                    <button>send</button>
+                </form>
+            </div>
+        </div>
     </div>
 </template>

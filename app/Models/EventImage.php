@@ -10,4 +10,16 @@ class EventImage extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $appends = ['src'];
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
+
+    function getSrcAttribute()
+    {
+        return asset("storage/{$this->filename}");
+    }
+
 }

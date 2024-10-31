@@ -103,11 +103,10 @@
                 <!-- <InputError class="mt-2" :message="form.errors.code" /> -->
             </div>
 
-            <!-- <div class="mt-5">
-                <InputLabel for="comment" value="Open Comments" />
-                <input type="checkbox" v-model="form.open_comment" />
-
-            </div> -->
+            <div class="mt-5">
+                <InputLabel for="comment" value="Add Images" />
+                <input type="file" multiple @change="handleImage" />
+            </div>
 
             <!-- <div class="mt-5">
                 <InputLabel for="active" value="Active" />
@@ -140,7 +139,11 @@ const form = useForm({
     time: "",
     description: "",
     type: "",
+    images: [],
 });
+const handleImage = (e) => {
+    form.images = e.target.files;
+};
 const type = ["Cultural", "Sports", "Music", "Dance", "Science", "Arts"];
 const submit = () => {
     // localStorage.setItem()
