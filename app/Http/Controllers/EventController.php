@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Events\CreateActivity;
-use App\Events\UserFollow;
 use App\Models\Event;
 use App\Models\EventImage;
 use App\Models\Host;
-use App\Models\Notiifcations;
 use App\Models\UserInfo;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Inertia\Inertia;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use Str;
 class EventController extends Controller
 {
@@ -68,13 +66,18 @@ class EventController extends Controller
             'userinfo' => $user->id
         ]);
 
+
+        $manager = new ImageManager(new Driver());
         if ($request->hasFile('images')) {
 
             $images = $request->file('images');
 
             foreach ($images as $image) {
+
                 $name = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
                 $path = $image->storeAs('images', $name, 'public');
+                $$manager->read($image)->resize(615, 435)->toJpeg(80)->save();
+
                 EventImage::create([
                     'filename' => $path,
                     'event_id' => $activity->id
